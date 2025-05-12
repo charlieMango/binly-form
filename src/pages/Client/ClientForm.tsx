@@ -1,13 +1,6 @@
-// The exported code uses Tailwind CSS. Install Tailwind CSS in your dev environment to ensure all styles work.
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Input, Form, message } from "antd";
-import {
-    SendOutlined,
-    UserOutlined,
-    HomeOutlined,
-    PhoneOutlined,
-    CheckCircleOutlined,
-} from "@ant-design/icons";
+import { SendOutlined, UserOutlined, HomeOutlined, PhoneOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import 'react-phone-number-input/style.css';
 import ReactInputMask from "react-input-mask";
 
@@ -17,15 +10,22 @@ const ClientForm: React.FC = () => {
     const [phone, setPhone] = useState<string>(''); // Состояние для номера телефона
     const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
 
-    const handleSubmit = (values: any) => {
-        console.log('values', values);
+    // Проверка на наличие в localStorage, была ли отправлена форма
+    useEffect(() => {
+        const isFormSubmitted = localStorage.getItem("formSubmitted");
+        if (isFormSubmitted === "true") {
+            setFormSubmitted(true); // Если форма уже отправлена, показываем блок благодарности
+        }
+    }, []);
 
+    const handleSubmit = (values: any) => {
         setLoading(true);
         // Simulate API call
         setTimeout(() => {
             message.success("Your request has been submitted successfully!");
             form.resetFields();
-            setFormSubmitted(true);
+            setFormSubmitted(true); // Отмечаем, что форма была отправлена
+            localStorage.setItem("formSubmitted", "true"); // Сохраняем информацию о том, что форма отправлена
             setLoading(false);
         }, 1500);
     };
@@ -34,101 +34,94 @@ const ClientForm: React.FC = () => {
         setPhone(event.target.value); // Получаем значение из события
     };
 
-
+    // Проверка на заполненность всех обязательных полей
     const isFormValid = (): boolean => {
         const values = form.getFieldsValue();
         return values.name && values.address && values.phone; // Проверяем, что все обязательные поля заполнены
     };
 
-
-    const renderForm = () => {
-        console.log('isFormValid', !!isFormValid())
-
-        return (
-            <div className="p-8 md:p-12 md:w-1/2">
-                <h2 className="text-3xl font-bold mb-6 text-center md:text-left">
-                    Освободи время для себя
-                </h2>
-                <p className="text-gray-600 mb-8">
-                    Заполните форму, чтобы заказать первый вынос.
-                    Попробуйте новый, удобный, домашний сервис.
-                </p>
-                <Form form={form} layout="vertical" onFinish={handleSubmit}>
-                    <Form.Item
-                        name="name"
-                        label="Ваше имя"
-                        rules={[
-                            { required: true, message: "Please enter your name" },
-                        ]}
+    // Функция для рендеринга формы
+    const renderForm = () => (
+        <div className="p-8 md:p-12 md:w-1/2">
+            <h2 className="text-3xl font-bold mb-6 text-center md:text-left">
+                Освободи время для себя
+            </h2>
+            <p className="text-gray-600 mb-8">
+                Заполните форму, чтобы заказать первый вынос.
+                Попробуйте новый, удобный, домашний сервис.
+            </p>
+            <Form form={form} layout="vertical" onFinish={handleSubmit}>
+                <Form.Item
+                    name="name"
+                    label="Ваше имя"
+                    rules={[
+                        { required: true, message: "Please enter your name" },
+                    ]}
+                >
+                    <Input
+                        prefix={<UserOutlined className="text-gray-400" />}
+                        placeholder="Имя"
+                        className="py-3 px-4 rounded-lg border-gray-300 text-sm"
+                    />
+                </Form.Item>
+                <Form.Item
+                    name="address"
+                    label="Ваш адрес"
+                    rules={[
+                        { required: true, message: "Please enter your address" },
+                    ]}
+                >
+                    <Input
+                        prefix={<HomeOutlined className="text-gray-400" />}
+                        placeholder="Адрес"
+                        className="py-3 px-4 rounded-lg border-gray-300 text-sm"
+                    />
+                </Form.Item>
+                <Form.Item
+                    name="phone"
+                    label="Ваш телефон"
+                    rules={[
+                        {
+                            required: true,
+                            message: "Please enter your phone number",
+                        },
+                    ]}
+                >
+                    <ReactInputMask
+                        mask="+7-999-99-999-99" // Маска для ввода телефона
+                        maskChar="_"
+                        value={phone} // Привязка состояния
+                        onChange={handlePhoneChange} // Обработчик изменений
                     >
-                        <Input
-                            prefix={<UserOutlined className="text-gray-400" />}
-                            placeholder="Имя"
-                            className="py-3 px-4 rounded-lg border-gray-300 text-sm"
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        name="address"
-                        label="Ваш адрес"
-                        rules={[
-                            { required: true, message: "Please enter your address" },
-                        ]}
+                        {(inputProps: any) => (
+                            <Input
+                                {...inputProps}
+                                prefix={<PhoneOutlined className="text-gray-400" />}
+                                placeholder="Телефон"
+                                className="py-3 px-4 rounded-lg border-gray-300 text-sm"
+                            />
+                        )}
+                    </ReactInputMask>
+                </Form.Item>
+                <Form.Item className="mb-0 mt-6">
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        loading={loading}
+                        disabled={!isFormValid()}
+                        className="ant-btn !rounded-button whitespace-nowrap bg-[#8C7D69] !hover:bg-[#7A6C5A] border-none text-white font-medium w-full !py-3 h-auto flex items-center justify-center text-base"
                     >
-                        <Input
-                            prefix={<HomeOutlined className="text-gray-400" />}
-                            placeholder="Адрес"
-                            className="py-3 px-4 rounded-lg border-gray-300 text-sm"
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        name="phone"
-                        label="Ваш телефон"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Please enter your phone number",
-                            },
-                        ]}
-                    >
-                        <ReactInputMask
-                            mask="+7-999-99-999-99" // Маска для ввода телефона
-                            maskChar="_"
-                            value={phone} // Привязка состояния
-                            onChange={handlePhoneChange} // Обработчик изменений
-                        >
-                            {(inputProps: any) => (
-                                <Input
-                                    {...inputProps}
-                                    prefix={<PhoneOutlined className="text-gray-400" />}
-                                    placeholder="Телефон"
-                                    className="py-3 px-4 rounded-lg border-gray-300 text-sm"
-                                />
-                            )}
-                        </ReactInputMask>
-                    </Form.Item>
-                    <Form.Item className="mb-0 mt-6">
-                        <Button
-                            type="primary"
-                            htmlType="submit"
-                            loading={loading}
-                            disabled={!isFormValid()}
-                            className="ant-btn !rounded-button whitespace-nowrap bg-[#8C7D69] !hover:bg-[#7A6C5A] border-none text-white font-medium w-full !py-3 h-auto flex items-center justify-center text-base"
-                        >
-                            Отправить
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </div>
-        )
-    }
-
-
+                        Отправить
+                    </Button>
+                </Form.Item>
+            </Form>
+        </div>
+    );
 
     return (
         <div className="min-h-screen bg-white text-gray-800 font-sans">
             {/* Hero Section */}
             <section className="relative min-h-[80vh] flex flex-col md:flex-row">
-                {/* Background Image */}
                 <div className="absolute inset-0 z-0 overflow-hidden">
                     <img
                         src="https://readdy.ai/api/search-image?query=A%20modern%20minimalist%20scene%20of%20a%20courier%20in%20casual%20uniform%20standing%20at%20an%20apartment%20door%2C%20holding%20a%20small%20eco-friendly%20waste%20bag.%20The%20image%20has%20a%20clean%2C%20airy%20aesthetic%20with%20soft%20natural%20lighting%20and%20a%20neutral%20color%20palette%20of%20whites%2C%20light%20grays%2C%20and%20soft%20beige%20tones.%20The%20background%20shows%20a%20modern%20apartment%20hallway%20with%20minimal%20decor&width=1440&height=800&seq=1&orientation=landscape"
@@ -136,7 +129,6 @@ const ClientForm: React.FC = () => {
                         className="w-full h-full object-cover object-top opacity-20"
                     />
                 </div>
-                {/* Content Container */}
                 <div className="container mx-auto px-6 py-16 z-10 flex flex-col md:flex-row items-center">
                     {/* Left Side - Image */}
                     <div className="w-full md:w-1/2 mb-10 md:mb-0">
@@ -184,18 +176,20 @@ const ClientForm: React.FC = () => {
                                     className="h-full w-full object-cover object-top"
                                 />
                             </div>
-                            {formSubmitted ? (<div className="w-full md:w-1/2 md:pl-16 flex flex-col justify-center items-center text-center">
-                                <CheckCircleOutlined className="text-6xl text-green-500 mb-6" />
-                                <h2 className="text-3xl font-bold mb-6">Спасибо за ваш запрос!</h2>
-                                <p className="text-lg text-gray-600">
-                                    Мы получили ваш запрос и скоро с вами свяжемся.
-                                </p>
-                            </div>) :
-                                renderForm()}
+                            {!formSubmitted ? renderForm() : (
+                                <div className="w-full md:w-1/2 flex flex-col justify-center items-center text-center">
+                                    <CheckCircleOutlined style={{ color: "#4CAF50" }} className="text-6xl mb-6" />
+                                    <h2 className="text-3xl font-bold mb-6">Спасибо за ваш запрос!</h2>
+                                    <p className="text-lg text-gray-600">
+                                        Мы получили ваш запрос и скоро с вами свяжемся.
+                                    </p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
             </section>
+
             {/* How It Works Section */}
             <section className="py-20 bg-white">
                 <div className="container mx-auto px-6">
