@@ -3,6 +3,11 @@ import { Button, Input, Form, message } from "antd";
 import { SendOutlined, UserOutlined, HomeOutlined, PhoneOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import 'react-phone-number-input/style.css';
 import ReactInputMask from "react-input-mask";
+import clientImg from '../../assets/client-img.jpg';
+import courierImg from '../../assets/corier-img.jpg';
+import mobAppImg from '../../assets/mobile-app.jpg';
+import { supabase } from '../../libs/supabaseClient';
+
 
 const ClientForm: React.FC = () => {
     const [form] = Form.useForm();
@@ -18,16 +23,32 @@ const ClientForm: React.FC = () => {
         }
     }, []);
 
-    const handleSubmit = (values: any) => {
+    const handleSubmit = async (values: any) => {
+
+        console.log('values', values);
+
         setLoading(true);
-        // Simulate API call
-        setTimeout(() => {
-            message.success("Your request has been submitted successfully!");
+        try {
+            const { error } = await supabase
+                .from('leads')
+                .insert([
+                    {
+                        name: values.name,
+                        phone: values.phone,
+                        address: values.address,
+                    }
+                ]);  // выключаем RETURNING, чтобы не требовать SELECT-политику
+            if (error) throw error;
+            message.success("Ваш запрос успешно отправлен!");  // локализация
             form.resetFields();
-            setFormSubmitted(true); // Отмечаем, что форма была отправлена
-            localStorage.setItem("formSubmitted", "true"); // Сохраняем информацию о том, что форма отправлена
+            setFormSubmitted(true);
+            localStorage.setItem("formSubmitted", "true");
+        } catch (err: any) {
+            console.error('Supabase insert error:', err);
+            message.error("Ошибка при отправке. Попробуйте снова.");
+        } finally {
             setLoading(false);
-        }, 1500);
+        }
     };
 
     const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,7 +145,7 @@ const ClientForm: React.FC = () => {
             <section className="relative min-h-[80vh] flex flex-col md:flex-row">
                 <div className="absolute inset-0 z-0 overflow-hidden">
                     <img
-                        src="https://readdy.ai/api/search-image?query=A%20modern%20minimalist%20scene%20of%20a%20courier%20in%20casual%20uniform%20standing%20at%20an%20apartment%20door%2C%20holding%20a%20small%20eco-friendly%20waste%20bag.%20The%20image%20has%20a%20clean%2C%20airy%20aesthetic%20with%20soft%20natural%20lighting%20and%20a%20neutral%20color%20palette%20of%20whites%2C%20light%20grays%2C%20and%20soft%20beige%20tones.%20The%20background%20shows%20a%20modern%20apartment%20hallway%20with%20minimal%20decor&width=1440&height=800&seq=1&orientation=landscape"
+                        src={clientImg}
                         alt="Courier service"
                         className="w-full h-full object-cover object-top opacity-20"
                     />
@@ -134,7 +155,7 @@ const ClientForm: React.FC = () => {
                     <div className="w-full md:w-1/2 mb-10 md:mb-0">
                         <div className="relative rounded-xl overflow-hidden shadow-2xl">
                             <img
-                                src="https://readdy.ai/api/search-image?query=A%20young%20professional%20courier%20in%20a%20neat%20uniform%20standing%20at%20a%20modern%20apartment%20door%2C%20collecting%20trash%20bags%20from%20a%20customer.%20The%20image%20has%20a%20clean%20aesthetic%20with%20soft%20natural%20lighting%2C%20showing%20a%20friendly%20interaction.%20The%20background%20features%20a%20contemporary%20apartment%20hallway%20with%20minimalist%20design%20elements%20and%20a%20neutral%20color%20palette&width=700&height=700&seq=2&orientation=squarish"
+                                src={courierImg}
                                 alt="Trash collection service"
                                 className="w-full h-full object-cover object-top"
                             />
@@ -171,7 +192,7 @@ const ClientForm: React.FC = () => {
                         <div className="md:flex">
                             <div className="md:w-1/2 overflow-hidden">
                                 <img
-                                    src="https://readdy.ai/api/search-image?query=A%20person%20at%20home%20using%20a%20smartphone%20app%20to%20schedule%20a%20trash%20pickup%20service.%20The%20image%20shows%20a%20clean%2C%20modern%20living%20space%20with%20minimalist%20decor.%20The%20person%20is%20casually%20dressed%2C%20sitting%20comfortably%20on%20a%20sofa.%20The%20smartphone%20screen%20displays%20a%20waste%20management%20app%20interface.%20The%20scene%20has%20soft%20natural%20lighting%20with%20a%20neutral%20color%20palette&width=600&height=800&seq=3&orientation=portrait"
+                                    src={mobAppImg}
                                     alt="Using trash pickup app"
                                     className="h-full w-full object-cover object-top"
                                 />
