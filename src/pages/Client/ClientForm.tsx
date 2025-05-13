@@ -1,67 +1,95 @@
-import React, { useState, useEffect } from "react";
-import { Button, Input, Form, message } from "antd";
-import { SendOutlined, UserOutlined, HomeOutlined, PhoneOutlined, CheckCircleOutlined } from "@ant-design/icons";
-import 'react-phone-number-input/style.css';
+import React, { useState, forwardRef, useEffect, useRef, useImperativeHandle } from "react";
+import { Button, Input, Form, Select, type InputRef, type InputProps } from "antd";
+import {
+    SendOutlined,
+    UserOutlined,
+    HomeOutlined,
+    PhoneOutlined,
+    CheckCircleOutlined
+} from "@ant-design/icons";
 import ReactInputMask from "react-input-mask";
+
 import clientImg from '../../assets/client-img.jpg';
 import courierImg from '../../assets/corier-img.jpg';
 import mobAppImg from '../../assets/mobile-app.jpg';
-import { supabase } from '../../libs/supabaseClient';
+import 'react-phone-number-input/style.css';
 
+
+const MaskedInput = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
+    const innerRef = useRef<InputRef>(null);
+
+    // прокидываем ref на DOM-элемент input
+    useImperativeHandle(ref, () => innerRef.current!.input as HTMLInputElement);
+
+    return <Input {...props} ref={innerRef} />;
+});
+
+
+
+const DISTRICTS = [
+    "Вахитовский район",
+    "Авиастроительный район",
+    "Кировский район",
+    "Московский район",
+    "Ново-Савиновский район",
+    "Советский район",
+    "Приволжский район",
+] as const;
+
+type District = typeof DISTRICTS[number];
+
+interface FormValues {
+    name: string;
+    phone: string;
+    address: string;
+    district: District;
+}
 
 const ClientForm: React.FC = () => {
-    const [form] = Form.useForm();
+    const [form] = Form.useForm<FormValues>();
     const [loading, setLoading] = useState(false);
-    const [phone, setPhone] = useState<string>(''); // Состояние для номера телефона
     const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
 
-    // Проверка на наличие в localStorage, была ли отправлена форма
     useEffect(() => {
-        const isFormSubmitted = localStorage.getItem("formSubmitted");
-        if (isFormSubmitted === "true") {
-            setFormSubmitted(true); // Если форма уже отправлена, показываем блок благодарности
+        if (localStorage.getItem("formSubmitted") === "true") {
+            setFormSubmitted(true);
         }
     }, []);
 
-    const handleSubmit = async (values: any) => {
-
-        console.log('values', values);
-
+    const handleSubmit = async (values: {
+        name: string;
+        phone: string;
+        address: string;
+        district?: string;
+    }) => {
         setLoading(true);
-        try {
-            const { error } = await supabase
-                .from('leads')
-                .insert([
-                    {
-                        name: values.name,
-                        phone: values.phone,
-                        address: values.address,
-                    }
-                ]);  // выключаем RETURNING, чтобы не требовать SELECT-политику
-            if (error) throw error;
-            message.success("Ваш запрос успешно отправлен!");  // локализация
-            form.resetFields();
-            setFormSubmitted(true);
-            localStorage.setItem("formSubmitted", "true");
-        } catch (err: any) {
-            console.error('Supabase insert error:', err);
-            message.error("Ошибка при отправке. Попробуйте снова.");
-        } finally {
-            setLoading(false);
-        }
+
+        // try {
+        //     const { error } = await supabase
+        //         .from('leads')
+        //         .insert([
+        //             {
+        //                 name: values.name,
+        //                 phone: values.phone,
+        //                 address: values.address,
+        //                 district: values.district ?? null
+        //             }
+        //         ]);
+        //     if (error) throw error;
+
+        //     message.success("Ваш запрос успешно отправлен!");
+        //     form.resetFields();
+        //     setFormSubmitted(true);
+        //     localStorage.setItem("formSubmitted", "true");
+        // } catch (err: any) {
+        //     console.error('Supabase insert error:', err);
+        //     message.error("Ошибка при отправке. Попробуйте снова.");
+        // } finally {
+        //     setLoading(false);
+        // }
     };
 
-    const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setPhone(event.target.value); // Получаем значение из события
-    };
 
-    // Проверка на заполненность всех обязательных полей
-    const isFormValid = (): boolean => {
-        const values = form.getFieldsValue();
-        return values.name && values.address && values.phone; // Проверяем, что все обязательные поля заполнены
-    };
-
-    // Функция для рендеринга формы
     const renderForm = () => (
         <div className="p-8 md:p-12 md:w-1/2">
             <h2 className="text-3xl font-bold mb-6 text-center md:text-left">
@@ -71,69 +99,89 @@ const ClientForm: React.FC = () => {
                 Заполните форму, чтобы заказать первый вынос.
                 Попробуйте новый, удобный, домашний сервис.
             </p>
+
             <Form form={form} layout="vertical" onFinish={handleSubmit}>
                 <Form.Item
                     name="name"
-                    label="Ваше имя"
-                    rules={[
-                        { required: true, message: "Please enter your name" },
-                    ]}
+                    label="Имя"
+                    rules={[{ required: true, message: "Please enter your name" }]}
                 >
                     <Input
-                        prefix={<UserOutlined className="text-gray-400" />}
                         placeholder="Имя"
                         className="py-3 px-4 rounded-lg border-gray-300 text-sm"
                     />
                 </Form.Item>
-                <Form.Item
-                    name="address"
-                    label="Ваш адрес"
-                    rules={[
-                        { required: true, message: "Please enter your address" },
-                    ]}
-                >
-                    <Input
-                        prefix={<HomeOutlined className="text-gray-400" />}
-                        placeholder="Адрес"
-                        className="py-3 px-4 rounded-lg border-gray-300 text-sm"
-                    />
-                </Form.Item>
+
                 <Form.Item
                     name="phone"
-                    label="Ваш телефон"
-                    rules={[
-                        {
-                            required: true,
-                            message: "Please enter your phone number",
-                        },
-                    ]}
+                    label="Телефон"
+                    rules={[{ required: true, message: "Please enter your phone number" }]}
                 >
+
                     <ReactInputMask
-                        mask="+7-999-99-999-99" // Маска для ввода телефона
-                        maskChar="_"
-                        value={phone} // Привязка состояния
-                        onChange={handlePhoneChange} // Обработчик изменений
+                        mask="+7-999-99-999-99"
+                        maskChar=""
                     >
                         {(inputProps: any) => (
-                            <Input
+                            <input
                                 {...inputProps}
-                                prefix={<PhoneOutlined className="text-gray-400" />}
+                                className="custom-input w-full py-2 px-2 rounded-lg border border-gray-300 text-sm outline-none focus:ring-2 focus:ring-[#8C7D69] transition"
                                 placeholder="Телефон"
-                                className="py-3 px-4 rounded-lg border-gray-300 text-sm"
                             />
                         )}
                     </ReactInputMask>
                 </Form.Item>
-                <Form.Item className="mb-0 mt-6">
-                    <Button
-                        type="primary"
-                        htmlType="submit"
-                        loading={loading}
-                        disabled={!isFormValid()}
-                        className="ant-btn !rounded-button whitespace-nowrap bg-[#8C7D69] !hover:bg-[#7A6C5A] border-none text-white font-medium w-full !py-3 h-auto flex items-center justify-center text-base"
-                    >
-                        Отправить
-                    </Button>
+
+                {/* Новый селект Район */}
+                <Form.Item
+                    name="district"
+                    label="Район"
+                    rules={[{ required: true, message: "Пожалуйста, выберите район" }]}
+                >
+                    <Select<District>
+                        placeholder="Выберите район"
+                        showSearch
+                        optionFilterProp="label"
+                        options={DISTRICTS.map(d => ({ label: d, value: d }))}
+                    />
+                </Form.Item>
+
+                <Form.Item
+                    name="address"
+                    label="Ваш адрес"
+                >
+                    <Input
+                        placeholder="Адрес"
+                        className="py-3 px-4 rounded-lg border-gray-300 text-sm"
+                    />
+                </Form.Item>
+
+
+
+                <Form.Item shouldUpdate className="mb-0 mt-6">
+                    {() => {
+                        // Проверяем, что все поля затронуты и без ошибок
+                        const hasErrors = form
+                            .getFieldsError(['name', 'phone', 'district'])
+                            .some(field => field.errors.length > 0);
+                        const allTouched = form.isFieldsTouched(
+                            ['name', 'phone', 'district'],
+                            true
+                        );
+
+                        return (
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                loading={loading}
+                                disabled={!allTouched || hasErrors}
+                                className="ant-btn !rounded-button whitespace-nowrap bg-[#8C7D69] !hover:bg-[#7A6C5A] border-none text-white font-medium w-full !py-3 h-auto flex items-center justify-center text-base"
+                                icon={<SendOutlined />}
+                            >
+                                Отправить
+                            </Button>
+                        );
+                    }}
                 </Form.Item>
             </Form>
         </div>
@@ -185,6 +233,7 @@ const ClientForm: React.FC = () => {
                     </div>
                 </div>
             </section>
+
             {/* Form Section */}
             <section id="request-form" className="py-20 bg-[#F5F2EA]">
                 <div className="container mx-auto px-6">
@@ -257,4 +306,5 @@ const ClientForm: React.FC = () => {
         </div>
     );
 };
+
 export default ClientForm;
