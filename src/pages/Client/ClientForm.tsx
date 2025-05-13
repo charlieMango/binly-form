@@ -1,10 +1,7 @@
 import React, { useState, forwardRef, useEffect, useRef, useImperativeHandle } from "react";
-import { Button, Input, Form, Select, type InputRef, type InputProps } from "antd";
+import { Button, Input, Form, Select, type InputRef, type InputProps, message } from "antd";
 import {
     SendOutlined,
-    UserOutlined,
-    HomeOutlined,
-    PhoneOutlined,
     CheckCircleOutlined
 } from "@ant-design/icons";
 import ReactInputMask from "react-input-mask";
@@ -13,18 +10,7 @@ import clientImg from '../../assets/client-img.jpg';
 import courierImg from '../../assets/corier-img.jpg';
 import mobAppImg from '../../assets/mobile-app.jpg';
 import 'react-phone-number-input/style.css';
-
-
-const MaskedInput = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-    const innerRef = useRef<InputRef>(null);
-
-    // прокидываем ref на DOM-элемент input
-    useImperativeHandle(ref, () => innerRef.current!.input as HTMLInputElement);
-
-    return <Input {...props} ref={innerRef} />;
-});
-
-
+import { supabase } from "../../libs/supabaseClient";
 
 const DISTRICTS = [
     "Вахитовский район",
@@ -64,29 +50,29 @@ const ClientForm: React.FC = () => {
     }) => {
         setLoading(true);
 
-        // try {
-        //     const { error } = await supabase
-        //         .from('leads')
-        //         .insert([
-        //             {
-        //                 name: values.name,
-        //                 phone: values.phone,
-        //                 address: values.address,
-        //                 district: values.district ?? null
-        //             }
-        //         ]);
-        //     if (error) throw error;
+        try {
+            const { error } = await supabase
+                .from('leads')
+                .insert([
+                    {
+                        name: values.name,
+                        phone: values.phone,
+                        address: values.address,
+                        district: values.district ?? null
+                    }
+                ]);
+            if (error) throw error;
 
-        //     message.success("Ваш запрос успешно отправлен!");
-        //     form.resetFields();
-        //     setFormSubmitted(true);
-        //     localStorage.setItem("formSubmitted", "true");
-        // } catch (err: any) {
-        //     console.error('Supabase insert error:', err);
-        //     message.error("Ошибка при отправке. Попробуйте снова.");
-        // } finally {
-        //     setLoading(false);
-        // }
+            message.success("Ваш запрос успешно отправлен!");
+            form.resetFields();
+            setFormSubmitted(true);
+            localStorage.setItem("formSubmitted", "true");
+        } catch (err: any) {
+            console.error('Supabase insert error:', err);
+            message.error("Ошибка при отправке. Попробуйте снова.");
+        } finally {
+            setLoading(false);
+        }
     };
 
 
