@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Input, Form, Select, message } from "antd";
+import { Button, Input, Form, Select, message, Checkbox } from "antd";
 import { SendOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import ReactInputMask from "react-input-mask";
 
@@ -26,12 +26,15 @@ interface FormValues {
   phone: string;
   address: string;
   district: District;
+  agreement: boolean;
 }
 
 const ClientForm: React.FC = () => {
   const [form] = Form.useForm<FormValues>();
   const [loading, setLoading] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
+
+  const agreementChecked = Form.useWatch("agreement", form);
 
   useEffect(() => {
     if (localStorage.getItem("formSubmitted") === "true") {
@@ -130,13 +133,36 @@ const ClientForm: React.FC = () => {
           />
         </Form.Item>
 
+        <Form.Item
+          name="agreement"
+          valuePropName="checked"
+          rules={[
+            {
+              required: true,
+              message: "Вы должны дать согласие на обработку данных",
+            },
+          ]}
+        >
+          <Checkbox>
+            Я даю согласие на обработку персональных данных в соответствии с{" "}
+            <a
+              href="/privacy"
+              target="_blank"
+              rel="noreferrer"
+              className="text-[#8C7D69] underline"
+            >
+              Политикой конфиденциальности
+            </a>
+          </Checkbox>
+        </Form.Item>
+
         <Form.Item shouldUpdate className="mt-6 mb-0">
           {() => {
             const hasErrors = form
-              .getFieldsError(["name", "phone", "district"])
+              .getFieldsError(["name", "phone", "district", "agreement"])
               .some((field) => field.errors.length > 0);
             const allTouched = form.isFieldsTouched(
-              ["name", "phone", "district"],
+              ["name", "phone", "district", "agreement"],
               true
             );
 
@@ -145,7 +171,7 @@ const ClientForm: React.FC = () => {
                 type="primary"
                 htmlType="submit"
                 loading={loading}
-                disabled={!allTouched || hasErrors}
+                disabled={!allTouched || hasErrors || !agreementChecked}
                 className="ant-btn !rounded-button whitespace-nowrap bg-[#8C7D69] !hover:bg-[#7A6C5A] border-none text-white font-medium w-full !py-3 h-auto flex items-center justify-center text-base"
                 icon={<SendOutlined />}
               >
