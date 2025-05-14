@@ -8,6 +8,7 @@ import courierImg from "../../assets/corier-img.jpg";
 import mobAppImg from "../../assets/mobile-app.jpg";
 import "react-phone-number-input/style.css";
 import { supabase } from "../../libs/supabaseClient";
+import { PrivacyPolicyModal } from "./PrivacyPolicyModal";
 
 const DISTRICTS = [
   "Вахитовский район",
@@ -33,6 +34,7 @@ const ClientForm: React.FC = () => {
   const [form] = Form.useForm<FormValues>();
   const [loading, setLoading] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
+  const [privacyVisible, setPrivacyVisible] = useState(false);
 
   const agreementChecked = Form.useWatch("agreement", form);
 
@@ -145,14 +147,12 @@ const ClientForm: React.FC = () => {
         >
           <Checkbox>
             Я даю согласие на обработку персональных данных в соответствии с{" "}
-            <a
-              href="/privacy"
-              target="_blank"
-              rel="noreferrer"
-              className="text-[#8C7D69] underline"
+            <span
+              onClick={() => setPrivacyVisible(true)}
+              className="text-[#8C7D69] underline cursor-pointer"
             >
               Политикой конфиденциальности
-            </a>
+            </span>
           </Checkbox>
         </Form.Item>
 
@@ -181,6 +181,11 @@ const ClientForm: React.FC = () => {
           }}
         </Form.Item>
       </Form>
+
+      <PrivacyPolicyModal
+        visible={privacyVisible}
+        onClose={() => setPrivacyVisible(false)}
+      />
     </div>
   );
 
