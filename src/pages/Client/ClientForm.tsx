@@ -52,6 +52,10 @@ const ClientForm: React.FC = () => {
       localStorage.setItem("formSubmitted", "true");
 
       setTimeout(() => {
+        window.open("https://t.me/binly_official", "_blank");
+      }, 1000);
+
+      setTimeout(() => {
         document.getElementById("success-block")?.scrollIntoView({
           behavior: "smooth",
           block: "start",
