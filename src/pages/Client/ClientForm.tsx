@@ -90,7 +90,7 @@ const ClientForm: React.FC = () => {
                 Освободи время для себя
             </h2>
             <p className="text-gray-600 mb-6 text-center md:text-left">
-                Заполните форму, чтобы заказать первый вынос. Попробуйте новый, удобный,
+                Заполните форму, чтобы попробовать новый, удобный,
                 домашний сервис.
             </p>
             <p className="text-center md:text-left text-[#8C7D69] bg-[#F5F2EA] px-4 py-2 border-l-4 border-[#8C7D69] mb-6 rounded">
