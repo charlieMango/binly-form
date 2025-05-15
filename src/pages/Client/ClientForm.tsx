@@ -94,7 +94,7 @@ const ClientForm: React.FC = () => {
                 домашний сервис.
             </p>
             <p className="text-center md:text-left text-[#8C7D69] bg-[#F5F2EA] px-4 py-2 border-l-4 border-[#8C7D69] mb-6 rounded">
-                Стоимость услуги — <span className="font-bold">149 ₽</span> за 1 вынос
+                <span className="font-bold"> от 149 ₽</span> за 1 вынос
             </p>
 
             <Form form={form} layout="vertical" onFinish={handleSubmit}>
