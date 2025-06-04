@@ -93,9 +93,6 @@ const ClientForm: React.FC = () => {
                 Заполните форму, чтобы попробовать новый, удобный,
                 домашний сервис.
             </p>
-            <p className="text-center md:text-left text-[#8C7D69] bg-[#F5F2EA] px-4 py-2 border-l-4 border-[#8C7D69] mb-6 rounded">
-                <span className="font-bold"> от 149 ₽</span> за 1 вынос
-            </p>
 
             <Form form={form} layout="vertical" onFinish={handleSubmit}>
                 <Form.Item
@@ -210,23 +207,18 @@ const ClientForm: React.FC = () => {
                     />
                 </div>
                 <div className="container mx-auto px-6 py-16 z-10 flex flex-col md:flex-row items-center">
-                    <div className="w-full md:w-1/2 mb-10 md:mb-0">
-                        <div className="relative rounded-xl overflow-hidden shadow-2xl">
-                            <img
-                                src={courierImg}
-                                alt="Trash collection service"
-                                className="w-full h-full object-cover object-top"
-                            />
-                        </div>
-                    </div>
-                    <div className="w-full md:w-1/2 md:pl-16 flex flex-col justify-center items-start">
+                <div className="w-full md:w-1/2 md:pl-16 flex flex-col justify-center items-start">
                         <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-                            Освободи корзину одним нажатием
+                            Освободи своё время: идеальное решение для домашней гармонии
                         </h1>
                         <p className="text-lg md:text-xl mb-4 text-gray-600 leading-relaxed">
-                            Заказывайте вынос мусора через приложение — и забудьте про походы
-                            к контейнеру. Курьер заберёт пакет прямо от вашей двери.
+                            Заказывайте вынос мусора через приложение — и освободите свое время.
+                            Идеальный помощник для вашего комфорта и чистоты.
                         </p>
+
+                         <p className="text-center md:text-left text-[#8C7D69] bg-[#F5F2EA] px-4 py-2 border-l-4 border-[#8C7D69] mb-6 rounded">
+                            <span className="font-bold"> от 149 ₽</span> за 1 вынос
+                         </p>
 
                         <Button
                             type="primary"
@@ -239,7 +231,7 @@ const ClientForm: React.FC = () => {
                                     ?.scrollIntoView({ behavior: "smooth", block: "start" })
                             }
                         >
-                            Оставить заявку
+                            Заказать услугу
                         </Button>
 
                         <div>
@@ -247,6 +239,53 @@ const ClientForm: React.FC = () => {
 
                         </div>
 
+                    </div>
+                    <div className="w-full md:w-1/2 mb-10 md:mb-0">
+                        <div className="relative rounded-xl overflow-hidden shadow-2xl">
+                            <img
+                                src={courierImg}
+                                alt="Trash collection service"
+                                className="w-full h-full object-cover object-top"
+                            />
+                        </div>
+                    </div>
+                   
+                </div>
+            </section>
+
+            <section className="py-24 bg-white">
+                <div className="container mx-auto px-6">
+                    <div className="text-center mb-16">
+                        <h2 className="text-4xl font-bold mb-4">Как это работает</h2>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                        <div className="flex flex-col items-center text-center">
+                            <div className="w-24 h-24 mb-6 rounded-full bg-[#F5F2EA] flex items-center justify-center">
+                                <i className="fas fa-mobile-alt text-4xl text-[#8C7D69]"></i>
+                            </div>
+                            <h3 className="text-2xl font-bold mb-2">1. Закажите вынос</h3>
+                            <p className="text-gray-600">
+                                Заполните простую форму и выберете удобное время
+                            </p>
+                        </div>
+                        <div className="flex flex-col items-center text-center">
+                            <div className="w-24 h-24 mb-6 rounded-full bg-[#F5F2EA] flex items-center justify-center">
+                                <i className="fas fa-trash-alt text-4xl text-[#8C7D69]"></i>
+                            </div>
+                            <h3 className="text-2xl font-bold mb-2">2. Приготовьте мусор</h3>
+                            <p className="text-gray-600">Оставьте ваши пакеты за дверью</p>
+                        </div>
+                        <div className="flex flex-col items-center text-center">
+                            <div className="w-24 h-24 mb-6 rounded-full bg-[#F5F2EA] flex items-center justify-center">
+                                <i className="fas fa-check-circle text-4xl text-[#8C7D69]"></i>
+                            </div>
+                            <h3 className="text-2xl font-bold mb-2">
+                                3. Остальное оставьте нам
+                            </h3>
+                            <p className="text-gray-600">
+                                После оплаты курьер заберет пакеты в удобное для вас время
+                            </p>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -288,45 +327,7 @@ const ClientForm: React.FC = () => {
                 </div>
             </section>
 
-            <section className="py-24 bg-white">
-                <div className="container mx-auto px-6">
-                    <div className="text-center mb-16">
-                        <h2 className="text-4xl font-bold mb-4">Как это работает</h2>
-                        <p className="text-xl text-gray-600">
-                            Простые шаги для чистоты вашего дома
-                        </p>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-                        <div className="flex flex-col items-center text-center">
-                            <div className="w-24 h-24 mb-6 rounded-full bg-[#F5F2EA] flex items-center justify-center">
-                                <i className="fas fa-mobile-alt text-4xl text-[#8C7D69]"></i>
-                            </div>
-                            <h3 className="text-2xl font-bold mb-4">1. Закажите вынос</h3>
-                            <p className="text-gray-600">
-                                Заполните простую форму и выберете удобное время
-                            </p>
-                        </div>
-                        <div className="flex flex-col items-center text-center">
-                            <div className="w-24 h-24 mb-6 rounded-full bg-[#F5F2EA] flex items-center justify-center">
-                                <i className="fas fa-trash-alt text-4xl text-[#8C7D69]"></i>
-                            </div>
-                            <h3 className="text-2xl font-bold mb-4">2. Приготовьте мусор</h3>
-                            <p className="text-gray-600">Оставьте ваш мусор за дверью</p>
-                        </div>
-                        <div className="flex flex-col items-center text-center">
-                            <div className="w-24 h-24 mb-6 rounded-full bg-[#F5F2EA] flex items-center justify-center">
-                                <i className="fas fa-check-circle text-4xl text-[#8C7D69]"></i>
-                            </div>
-                            <h3 className="text-2xl font-bold mb-4">
-                                3. Остальное оставьте нам
-                            </h3>
-                            <p className="text-gray-600">
-                                Наш курьер заберет его, мы проверим правильность
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            
         </div>
     );
 };

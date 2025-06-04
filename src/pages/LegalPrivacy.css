@@ -1,0 +1,45 @@
+/* Общие стили для правовых страниц */
+.legal-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background-color: #ffffff;
+  font-family: 'Arial', sans-serif;
+  color: #0e0e0e;
+  line-height: 1.8;
+  font-size: 16px;
+}
+
+.legal-page h1 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #0e0e0e;
+}
+
+.legal-page h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  color: #0e0e0e;
+}
+
+.legal-page p {
+  margin-bottom: 20px;
+}
+
+.legal-page ul {
+  margin-left: 20px;
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+.legal-page a {
+  color: #0e0e0e;
+  text-decoration: underline;
+}
+
+.legal-page a:hover {
+  text-decoration: none;
+}
