@@ -48,7 +48,7 @@ const ClientForm: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://158.160.129.113:3000/api/form", {
+      const response = await fetch("https://api.binly-landing.ru/api/form", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

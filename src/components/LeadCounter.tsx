@@ -12,7 +12,7 @@ const LeadCounter: React.FC = () => {
   const fetchCount = async () => {
     try {
       const response = await fetch(
-        "http://158.160.129.113:3000/api/form/count"
+        "https://api.binly-landing.ru/api/form/count"
       );
       const { count: backendCount } = await response.json();
 
