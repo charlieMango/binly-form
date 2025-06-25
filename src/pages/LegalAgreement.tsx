@@ -1,4 +1,3 @@
-import React from 'react';
 import './LegalPrivacy.css';
 import Breadcrumbs from '../components/Breadcrumbs';
 
