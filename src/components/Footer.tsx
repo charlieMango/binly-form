@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-import './Footer.css';
+import { Link } from "react-router-dom";
+import "./Footer.css";
 
 const Footer = () => {
   return (
@@ -18,4 +18,4 @@ const Footer = () => {
   );
 };
 
-export default Footer; 
+export default Footer;
