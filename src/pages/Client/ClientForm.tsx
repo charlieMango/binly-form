@@ -9,6 +9,9 @@ import mobAppImg from "../../assets/mobile-app.jpg";
 import "react-phone-number-input/style.css";
 import { PrivacyPolicyModal } from "./PrivacyPolicyModal";
 import LeadCounter from "../../components/LeadCounter";
+import './ClientForm.css'
+import { useNavigate } from "react-router-dom";
+import Footer from "../../components/Footer";
 
 const DISTRICTS = [
   "Вахитовский район",
@@ -31,6 +34,8 @@ interface FormValues {
 }
 
 const ClientForm: React.FC = () => {
+
+  const navigate = useNavigate()
   const [form] = Form.useForm<FormValues>();
   const [loading, setLoading] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
@@ -63,21 +68,18 @@ const ClientForm: React.FC = () => {
       });
 
       if (!response.ok) throw new Error("Сервер вернул ошибку");
-
-      const result = await response.json();
-      console.log("✅ Успешно:", result);
-
-      message.success("Ваш запрос успешно отправлен!");
       form.resetFields();
       setFormSubmitted(true);
       localStorage.setItem("formSubmitted", "true");
 
+
+      message.success("Ваш запрос успешно отправлен!");
+
+
       setTimeout(() => {
-        document.getElementById("success-block")?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }, 100);
+        navigate('/success')
+      }, 500);
+
     } catch (err) {
       console.error("Ошибка при отправке:", err);
       message.error("Ошибка при отправке. Попробуйте снова.");
@@ -176,6 +178,7 @@ const ClientForm: React.FC = () => {
 
             return (
               <Button
+
                 type="primary"
                 htmlType="submit"
                 loading={loading}
@@ -299,31 +302,17 @@ const ClientForm: React.FC = () => {
                   className="h-full w-full object-cover object-top"
                 />
               </div>
-              {!formSubmitted ? (
-                renderForm()
-              ) : (
-                <div className="w-full md:w-1/2 min-h-[500px] flex items-center justify-center p-8 md:p-12">
-                  <div className="text-center">
-                    <CheckCircleOutlined
-                      style={{ color: "#4CAF50" }}
-                      className="text-6xl mb-6"
-                    />
-                    <h2 className="text-3xl font-bold mb-4">
-                      Спасибо за ваш запрос!
-                    </h2>
-                    <p className="text-lg text-gray-600 mb-2">
-                      Мы получили ваш запрос и скоро с вами свяжемся.
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      После запуска приложения мы оповестим вас в чат-боте.
-                    </p>
-                  </div>
-                </div>
-              )}
+
+              {renderForm()}
+
             </div>
           </div>
         </div>
       </section>
+
+      <section className="form-divider">
+      </section>
+      <Footer />
     </div>
   );
 };

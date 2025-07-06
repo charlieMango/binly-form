@@ -1,0 +1,28 @@
+.success-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 85vh;
+    font-size: 49px;
+    padding: 60px;
+    color: #1D1D1B;
+}
+
+.icon-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 200px;
+     height: 200px;
+     width: 200px;
+     background: #ecf1e5;
+     margin: 0 auto;
+    i {
+        color: #9ABC66;
+        font-size: 100px;
+        line-height: 200px;
+        margin-left:-15px;
+    }
+}
+

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import CountUp from "react-countup";
 
-const POLL_INTERVAL = 3000;
+const POLL_INTERVAL = 50000;
 const INITIAL_COUNT = 3000;
 
 const LeadCounter: React.FC = () => {
